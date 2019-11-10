@@ -11,7 +11,6 @@ class Board
 
         std::vector<float> growthRate;
         std::vector<std::vector<float> > mutations;
-        std::vector <int> counter;
 
         void iteration();
 
@@ -19,13 +18,16 @@ class Board
         int col;
         int spec;
         int** board;
-        float totalFitness;
-        float averageFitness;
+
         void iterate(int h);
         float diffusion;
 
+
+        ///Stats
         int total;
         int totalMaster;
+        float totalFitness;
+        float averageFitness;
         int gen = 0;
 
 

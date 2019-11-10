@@ -44,11 +44,11 @@ Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::ve
         }
 
     this->growthRate = growthRate;
-    this->mutations =mutations;
+    this->mutations = mutations; //probabilitats de mutar
     this->diffusion = diffusion;
-    this->counter.resize(spec,0);
     this->row =row;
     this->col = col;
+
     averageFitness = newTotalFitness/(double) total;
     std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total , totalMaster,total);
     std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
@@ -68,8 +68,8 @@ void Board::iteration(){
         int neighborR=r;
         int neighborC=c;
 
+        //Select a random neighbor
         int ran = rand() % 8;
-
         if(ran<=2)
             neighborR = neighborR+row-1;
         if(ran>=5)
@@ -81,6 +81,7 @@ void Board::iteration(){
 
         int *neighbor = &(board[neighborR%row][neighborC%col]);
 
+        //Replication + Mutation
         if(*neighbor ==0 && ((float)rand()/(float)(RAND_MAX)) < growthRate[board[r][c]]){
             *neighbor = mutation(mutations[board[r][c] -1], (float)rand()/(float)(RAND_MAX))+1;
             totalFitness+=growthRate[*neighbor];
