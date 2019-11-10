@@ -20,10 +20,11 @@ int mutation(std::vector <float> &probabilities, float random_number){
 Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::vector<std::vector<float> > &mutations , float diffusion)
 {
 
+    total=0;
+    totalMaster=0;
+    double newTotalFitness = 0;
 
     board = (int**)malloc( row * sizeof( int* ));
-    total=0;
-    double newTotalFitness = 0;
     for ( int r = 0; r < row; r++ )
         {
             board[r] = (int*)malloc( col * sizeof( int));
@@ -33,6 +34,9 @@ Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::ve
                 if(s){
                     total ++;
                     newTotalFitness += growthRate[s];
+                    if(s==1){
+                        totalMaster++;
+                    }
                 }
             }
         }
@@ -44,7 +48,8 @@ Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::ve
     this->row =row;
     this->col = col;
     averageFitness = newTotalFitness/(double) total;
-    std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
+    std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total , totalMaster,total);
+    //std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
     totalFitness = newTotalFitness;
 
 }
@@ -73,16 +78,20 @@ void Board::iteration(){
 
         int *neighbor = &(board[neighborR%row][neighborC%col]);
 
-        if(*neighbor ==0 && ((float)rand()/(float)(RAND_MAX)) < averageFitness){
+        if(*neighbor ==0 && ((float)rand()/(float)(RAND_MAX)) < growthRate[board[r][c]]){
             *neighbor = mutation(mutations[board[r][c] -1], (float)rand()/(float)(RAND_MAX))+1;
             totalFitness+=growthRate[*neighbor];
             total++;
+            if(*neighbor == 1)
+                totalMaster++;
         }
 
-        //degradation
+        //competence
         if(*neighbor !=0 && ((float)rand()/(float)(RAND_MAX)) < growthRate[*neighbor]){
             totalFitness-=growthRate[board[r][c]];
             total--;
+            if(board[r][c]==1)
+                totalMaster--;
             board[r][c] = 0;
         }
 
@@ -93,7 +102,8 @@ void Board::iteration(){
     }
     gen++;
     averageFitness = totalFitness/(double) total;
-    std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
+    std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
+    //std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
    // totalFitness = newTotalFitness;
 }
 

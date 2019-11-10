@@ -9,9 +9,10 @@ int main()
 {
     srand(time(NULL));   // Initialization, should only be called once.
     int n = 2; //nombre de quasispecies
-    vector<float> growthRates = {0 , 1 , 0.5};
-    vector<vector<float>> mutations {   { 0.9, 0.1 },
-                                        { 0.1, 0.9 }
+    vector<float> growthRates = {0 , 0.3 , 0.1};
+
+    vector<vector<float>> mutations {   { 0.7, 0.3 },  //{ 0.7, 0.3 }, extinsio {0.75, 0.25 comú}
+                                        { 0, 1 }
                                     };
     float diffusion = 0.05;
 

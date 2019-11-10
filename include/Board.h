@@ -22,6 +22,7 @@ class Board
         float diffusion;
 
         int total;
+        int totalMaster;
         int gen = 0;
 
 
