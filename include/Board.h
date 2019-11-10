@@ -1,10 +1,13 @@
 #ifndef BOARD_H
 #define BOARD_H
 #include<vector>
+#include <fstream>
 class Board
 {
     public:
-        Board(int row, int col, int spec, std::vector<float> &growthRate, std::vector<std::vector<float> > &mutations , float diffusion);
+        Board(int row, int col, int spec, std::vector<float> &growthRate, std::vector<std::vector<float> > &mutations , float diffusion, std::FILE* myFile);
+
+        std::FILE* myFile;
 
         std::vector<float> growthRate;
         std::vector<std::vector<float> > mutations;

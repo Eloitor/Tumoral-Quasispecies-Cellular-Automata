@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <time.h>
 
 int mutation(std::vector <float> &probabilities, float random_number){
@@ -17,9 +18,10 @@ int mutation(std::vector <float> &probabilities, float random_number){
 }
 
 //constructor
-Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::vector<std::vector<float> > &mutations , float diffusion)
+Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::vector<std::vector<float> > &mutations , float diffusion, std::FILE* myFile)
 {
 
+    this->myFile = myFile;
     total=0;
     totalMaster=0;
     double newTotalFitness = 0;
@@ -48,7 +50,8 @@ Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::ve
     this->row =row;
     this->col = col;
     averageFitness = newTotalFitness/(double) total;
-    std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total , totalMaster,total);
+    std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total , totalMaster,total);
+    std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
     //std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
     totalFitness = newTotalFitness;
 
@@ -102,7 +105,9 @@ void Board::iteration(){
     }
     gen++;
     averageFitness = totalFitness/(double) total;
-    std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
+    std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
+    if(gen%100 ==0)
+        std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
     //std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
    // totalFitness = newTotalFitness;
 }
