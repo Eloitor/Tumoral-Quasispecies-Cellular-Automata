@@ -2,6 +2,7 @@
 #define BOARD_H
 #include<vector>
 #include <fstream>
+#include "bitmap.h"
 class Board
 {
     public:
@@ -12,8 +13,10 @@ class Board
         std::vector<float> growthRate;
         std::vector<std::vector<float> > mutations;
 
+        std::vector <std::vector <Pixel> > bmp;
         void iteration();
-
+        void draw();
+        Bitmap image;
         int row;
         int col;
         int spec;

@@ -4,6 +4,38 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
+#include "bitmap.h"
+
+using namespace std;
+
+void Board::draw(){
+    Bitmap image;
+
+  Pixel rgb;
+
+  //read a file example.bmp and convert it to a pixel matrix
+  image.open("example.bmp");
+
+  //verify that the file opened was a valid image
+  bool validBmp = image.isImage();
+
+  if( validBmp == true )
+  {
+    bmp = image.toPixelMatrix();
+
+
+    //take all the redness out of the top-left pixel
+    rgb = bmp[0][0];
+    rgb.red = 0;
+
+    //put changed image back into matrix, update the bitmap and save it
+    bmp[0][0] = rgb;
+    image.fromPixelMatrix(bmp);
+    image.save("example.bmp");
+  }
+
+
+}
 
 int mutation(std::vector <float> &probabilities, float random_number){
     float cnt = 0;
@@ -21,6 +53,8 @@ int mutation(std::vector <float> &probabilities, float random_number){
 Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::vector<std::vector<float> > &mutations , float diffusion, std::FILE* myFile)
 {
 
+
+    bmp.resize(row, std::vector<Pixel>(col, Pixel(255,255,255)));
     this->myFile = myFile;
     total=0;
     totalMaster=0;
@@ -34,9 +68,11 @@ Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::ve
                 int s =rand() % (spec+1); //podem inicialitzar a 0
                 board[r][c] = s;
                 if(s){
+                    bmp[r][c] = Pixel(50, 50, 50);
                     total ++;
                     newTotalFitness += growthRate[s];
                     if(s==1){
+                        bmp[r][c] = Pixel(100, 100, 100);
                         totalMaster++;
                     }
                 }
@@ -50,10 +86,12 @@ Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::ve
     this->col = col;
 
     averageFitness = newTotalFitness/(double) total;
-    std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total , totalMaster,total);
+   // std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total , totalMaster,total);
     std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
     //std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
     totalFitness = newTotalFitness;
+    image.fromPixelMatrix(bmp);
+    image.save("example.bmp");
 
 }
 
@@ -106,8 +144,8 @@ void Board::iteration(){
     }
     gen++;
     averageFitness = totalFitness/(double) total;
-    std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
-    if(gen%100 ==0)
+    //std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
+    if(gen%50 ==0)
         std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
     //std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
    // totalFitness = newTotalFitness;
