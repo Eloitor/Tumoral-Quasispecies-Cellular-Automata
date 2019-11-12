@@ -18,19 +18,20 @@ int main()
 
     int L = 200; //mida del tauler
     int h = 10000;  // nombre total de genracions
-    float diffusion = 0.05;  //probabilitat de difussio
+    float diffusion = 0.07;  //probabilitat de difussio
 
     char fileName[ENOUGH];
 
-    vector<float> growthRates = {0 , 0.3 , 0.1}; //Growth rate de les especies (amb un zero al davant, per les cèl·lules buides
-    vector<vector<float>> mutations { { 0.73, 0.27},  //Mutació entre quasiespecies
-                                        { 0, 1}
+    vector<float> growthRates = {0 , 0.2 , 0.15 , 0.05}; //Growth rate de les especies (amb un zero al davant, per les cèl·lules buides
+    vector<vector<float>> mutations { { 0.75, 0.25, 0},  //Mutació entre quasiespecies
+                                        { 0, 0.6, 0.2},
+                                        { 0, 0, 1}
                                     };
     sprintf(fileName, "%.2f_%.2f_%.2f.txt", growthRates[1], growthRates[2], mutations[0][1]);
     FILE *myFile = fopen( fileName, "w" );
 
     srand(time(NULL));
-    int n = 2; //nombre de quasispecies
+    int n = 3; //nombre de quasispecies
 
     Board b = Board(L,L, n, growthRates, mutations, diffusion, myFile); // initialize random board.
     b.draw();

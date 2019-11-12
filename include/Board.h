@@ -16,12 +16,13 @@ class Board
         std::vector <std::vector <Pixel> > bmp;
         void iteration();
         void draw();
+        void report();
         Bitmap image;
         int row;
         int col;
         int spec;
         int** board;
-        Pixel colors[3];
+        Pixel colors[6];
 
         void iterate(int h);
         float diffusion;
@@ -29,7 +30,7 @@ class Board
 
         ///Stats
         int total;
-        int totalMaster;
+        int totalCount[100];
         float totalFitness;
         float averageFitness;
         int gen = 0;

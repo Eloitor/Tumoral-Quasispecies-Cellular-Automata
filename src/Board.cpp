@@ -10,15 +10,48 @@ using namespace std;
 
 
 
+
+void Board::report(){
+
+
+    //averageFitness = newTotalFitness/(double) total;
+
+ //   std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
+    if(gen%50 ==0){
+       std::printf("Gen %3d:", gen);
+        for(int i = 0 ; i< spec+1; i++){
+            std::printf("\t%d", totalCount[i] );
+        }
+        std::printf("\n");
+      //  std::printf(myFile,"\t%f\n", averageFitness);
+       // draw();
+       draw();
+
+    }
+    std::fprintf(myFile,"Gen %3d:", gen);
+    for(int i = 0 ; i< spec+1; i++){
+        std::fprintf(myFile,"\t%d", totalCount[i] );
+        // printf("Hello %d\n",i);
+    }
+    std::fprintf(myFile,"\n");
+   // std::fprintf(myFile,"\t%f\n", averageFitness);
+    //\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total , totalMaster,total);
+   // std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
+    //std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
+    //totalFitness = newTotalFitness;
+
+}
+
 void Board::draw(){
 
-    bmp = image.toPixelMatrix();
+    //bmp = image.toPixelMatrix();
 
     for(int r=0; r<row; r++)
     for(int c=0; c<col; c++){
         bmp[r][c] = colors[board[r][c]];
 
     }
+
 
     image.fromPixelMatrix(bmp);
     char fileName[100];
@@ -42,13 +75,21 @@ int mutation(std::vector <float> &probabilities, float random_number){
 Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::vector<std::vector<float> > &mutations , float diffusion, std::FILE* myFile)
 {
 
-    colors[0] = Pixel(255,255,255);
-    colors[1] = Pixel(255,0,0);
-    colors[2] = Pixel(0,255,0);
+    colors[0] = Pixel(255,255,255); //White
+    colors[1] = Pixel(230,25,75); // Red
+    colors[2] = Pixel(60,180,75); // Green
+    colors[3] = Pixel(255,255,25);  //Yellow
+    colors[4] = Pixel(0,130,200);  //Blue
+    //colors[5] = Pixel(245,130,48);  //Orange
+    colors[5] = Pixel(145,30,180);  //Purple
+    this->spec = spec;
+    for(int i=0; i< spec+1; i++){
+        totalCount[i] = 0;
+    }
+
     bmp.resize(row, std::vector<Pixel>(col, Pixel(255,255,255)));
     this->myFile = myFile;
     total=0;
-    totalMaster=0;
     double newTotalFitness = 0;
 
     board = (int**)malloc( row * sizeof( int* ));
@@ -58,15 +99,9 @@ Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::ve
             for(int c=0; c<col; c++){
                 int s =rand() % (spec+1); //podem inicialitzar a 0
                 board[r][c] = s;
-                if(s){
-                    bmp[r][c] = Pixel(50, 50, 50);
-                    total ++;
-                    newTotalFitness += growthRate[s];
-                    if(s==1){
-                        bmp[r][c] = Pixel(100, 100, 100);
-                        totalMaster++;
-                    }
-                }
+                newTotalFitness += growthRate[s];
+                totalCount[s] ++;
+
             }
         }
 
@@ -76,14 +111,7 @@ Board::Board(int row, int col, int spec, std::vector<float> &growthRate, std::ve
     this->row =row;
     this->col = col;
 
-    averageFitness = newTotalFitness/(double) total;
-    std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total , totalMaster,total);
-    std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
-    //std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
-    totalFitness = newTotalFitness;
-    image.fromPixelMatrix(bmp);
-    image.save("example.bmp");
-    draw();
+    report();
 
 }
 
@@ -116,16 +144,16 @@ void Board::iteration(){
             *neighbor = mutation(mutations[board[r][c] -1], (float)rand()/(float)(RAND_MAX))+1;
             totalFitness+=growthRate[*neighbor];
             total++;
-            if(*neighbor == 1)
-                totalMaster++;
+            totalCount[*neighbor]++;
+            totalCount[0]--;
         }
 
         //competence
         if(*neighbor !=0 && ((float)rand()/(float)(RAND_MAX)) < growthRate[*neighbor]){
             totalFitness-=growthRate[board[r][c]];
             total--;
-            if(board[r][c]==1)
-                totalMaster--;
+            totalCount[board[r][c]] --;
+            totalCount[0]++;
             board[r][c] = 0;
         }
 
@@ -135,12 +163,7 @@ void Board::iteration(){
         }
     }
     gen++;
-    averageFitness = totalFitness/(double) total;
-    std::fprintf(myFile,"Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
-    if(gen%50 ==0){
-        std::printf("Gen %3d:\t%f\t%f\t%d/%d\n", gen, averageFitness,(float)totalMaster/(double) total, totalMaster,total );
-        draw();
-    }
+    report();
     //std::cout<< "Gen " << gen<<":\t" << averageFitness << std::endl;
    // totalFitness = newTotalFitness;
 }
