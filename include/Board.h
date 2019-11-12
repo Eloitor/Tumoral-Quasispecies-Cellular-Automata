@@ -21,6 +21,7 @@ class Board
         int col;
         int spec;
         int** board;
+        Pixel colors[3];
 
         void iterate(int h);
         float diffusion;

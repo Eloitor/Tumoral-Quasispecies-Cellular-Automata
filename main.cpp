@@ -22,9 +22,9 @@ int main()
 
     char fileName[ENOUGH];
 
-    vector<float> growthRates = {0 , 0.5 , 0.25}; //Growth rate de les especies (amb un zero al davant, per les cèl·lules buides
-    vector<vector<float>> mutations { { 0.92, 0.08 },  //Mutació entre quasiespecies
-                                        { 0, 1 }
+    vector<float> growthRates = {0 , 0.3 , 0.1}; //Growth rate de les especies (amb un zero al davant, per les cèl·lules buides
+    vector<vector<float>> mutations { { 0.73, 0.27},  //Mutació entre quasiespecies
+                                        { 0, 1}
                                     };
     sprintf(fileName, "%.2f_%.2f_%.2f.txt", growthRates[1], growthRates[2], mutations[0][1]);
     FILE *myFile = fopen( fileName, "w" );
